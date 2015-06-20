@@ -37,6 +37,16 @@ app.add_url_rule('/examples/<int:example_id>/edit', 'edit_example', view_func=vi
 app.add_url_rule('/examples/<int:example_id>/delete', view_func=views.delete_example, methods=['POST'])
 
 
+#list catalogs
+app.add_url_rule('/catalogs', 'list_catalogs', view_func=views.list_catalogs, methods=['GET', 'POST'])
+
+# Edit a catalog
+app.add_url_rule('/catalogs/<int:ctlg_id>/edit', 'edit_catalog', view_func=views.edit_catalog, methods=['GET', 'POST'])
+
+# Delete an example
+app.add_url_rule('/catalogs/<int:ctlg_id>/delete', view_func=views.delete_catalog, methods=['POST'])
+
+
 ## Error handlers
 # Handle 404 errors
 @app.errorhandler(404)

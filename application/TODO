@@ -1,0 +1,48 @@
+users
+  -- user id
+  --email
+  --name
+
+catalogs
+  -- catalog id
+  -- name
+  -- description
+  -- start_date
+  -- end_date
+  -- owner
+  -- shipments
+
+catalog_items
+  -- catalog id
+  -- item id
+  -- name 
+  -- description
+  -- image
+  -- unit_price
+  -- discount
+  -- max_available
+  -- max qty per order
+
+shipment
+  -- id
+  -- descr.
+  -- name
+  -- catalog id
+  -- payment type
+  -- location
+
+orders
+  -- order number
+  -- catalog
+  -- buyer
+  -- shipment
+
+order_line
+  -- order number
+  -- catalog_item
+  -- line number
+  -- line id
+  -- quantity
+  -- unit_price
+  -- amount
+

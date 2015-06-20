@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h3>Edit Catalog</h3>
+    <form id="edit-catalog" class="well"
+          action="{{ url_for('edit_catalog', ctlg_id=catalog.key.id()) }}" method="post" accept-charset="utf-8">
+        <fieldset>
+            {{ form.hidden_tag() }}
+            <input type="hidden" name="mode" value="edit" />
+            <div class="control-group">
+                <div class="control-label">{{ form.ctlg_name.label }}</div>
+                <div class="controls">
+                    {{ form.ctlg_name|safe }}
+                    {% if form.ctlg_name.errors %}
+                        <ul class="errors">
+                            {% for error in form.ctlg_name.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+            </div>
+            <div>&nbsp;</div>
+            <div class="control-group">
+                <div class="control-label">{{ form.ctlg_desc.label }}</div>
+                <div class="controls">
+                    {{ form.ctlg_desc|safe }}
+                    {% if form.ctlg_desc.errors %}
+                        <ul class="errors">
+                            {% for error in form.ctlg_desc.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+            </div>
+            <div>&nbsp;</div>
+            <div class="control-group">
+                <div class="controls">
+                    <input class="btn btn-primary" type="submit" value="Save Changes"/>
+                    <a class="btn cancel" href="{{ url_for('list_catalogs') }}">Cancel</a>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+{% endblock content %}

@@ -17,8 +17,8 @@ from flask_cache import Cache
 
 from application import app
 from decorators import login_required, admin_required
-from forms import ExampleForm
-from models import ExampleModel
+from forms import ExampleForm, CatalogForm
+from models import ExampleModel, CatalogModel
 
 
 # Flask-Cache (configured to use App Engine Memcache API)
@@ -82,6 +82,54 @@ def delete_example(example_id):
         except CapabilityDisabledError:
             flash(u'App Engine Datastore is currently in read-only mode.', 'info')
             return redirect(url_for('list_examples'))
+
+
+@login_required
+def list_catalogs():
+    """List all catalogs"""
+    catalogs = CatalogModel.query()
+    form = CatalogForm()
+    if form.validate_on_submit():
+        catalog = CatalogModel(
+            ctlg_name=form.ctlg_name.data,
+            ctlg_desc=form.ctlg_desc.data,
+            ctlg_owner=users.get_current_user()
+        )
+        try:
+            catalog.put()
+            ctlg_id = catalog.key.id()
+            flash(u'Catalog %s successfully saved.' % ctlg_id, 'success')
+            return redirect(url_for('list_catalogs'))
+        except CapabilityDisabledError:
+            flash(u'App Engine Datastore is currently in read-only mode.', 'info')
+            return redirect(url_for('list_catalogs'))
+    return render_template('list_catalogs.html', catalogs=catalogs, form=form)
+
+
+def edit_catalog(ctlg_id):
+    catalog = CatalogModel.get_by_id(ctlg_id)
+    form = CatalogForm(obj=catalog)
+    if request.method == "POST":
+        if form.validate_on_submit():
+            catalog.ctlg_name = form.data.get('ctlg_name')
+            catalog.ctlg_desc = form.data.get('ctlg_desc')
+            catalog.put()
+            flash(u'Catalog %s successfully saved.' % ctlg_id, 'success')
+            return redirect(url_for('list_catalogs'))
+    return render_template('edit_catalog.html', catalog=catalog, form=form)
+
+@login_required
+def delete_catalog(ctlg_id):
+    """Delete an example object"""
+    catalog = CatalogModel.get_by_id(ctlg_id)
+    if request.method == "POST":
+        try:
+            catalog.key.delete()
+            flash(u'Catalog %s successfully deleted.' % ctlg_id, 'success')
+            return redirect(url_for('list_catalogs'))
+        except CapabilityDisabledError:
+            flash(u'App Engine Datastore is currently in read-only mode.', 'info')
+            return redirect(url_for('list_catalogs'))    
 
 
 @admin_required
